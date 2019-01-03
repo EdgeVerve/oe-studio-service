@@ -15,12 +15,15 @@ var logger = require('oe-logger');
 var log = logger('oe-studio');
 var designerName = 'oe-studio';
 var util = require('../../lib/utils');
+var bodyParser = require('body-parser');
 
+module.exports = function designerConfiguration(server, next) {
+  server.use(bodyParser.json());
+  server.use(bodyParser.urlencoded({ extended: true }));
 
-module.exports = function designerConfiguration(server,next) {
   var isStudioEnabled = server.get('enableDesigner');
   var designerConfig = server.get('designer');
-  
+
   function convertVerb(verb) {
     if (verb.toLowerCase() === 'all') {
       return 'POST';
@@ -45,6 +48,7 @@ module.exports = function designerConfiguration(server,next) {
   function findAndCreate(modelName, data, options) {
     return new Promise(function (resolve, reject) {
       var model = loopback.findModel(modelName, options);
+      model = model ? model : server.models[modelName];
       model.findOne({ where: data }, options, function (err, res) {
         if (err) {
           reject(err);
@@ -222,7 +226,7 @@ module.exports = function designerConfiguration(server,next) {
       var model = req.params.model;
       var baseModel = util.checkModelWithPlural(req.app, model);
       var actualModel = loopback.findModel(baseModel, req.callContext);
-
+      actualModel = actualModel ? actualModel : server.models[baseModel];
       var r = {};
       for (var p in actualModel.definition.properties) {
         if (actualModel.definition.properties.hasOwnProperty(p)) {
@@ -307,6 +311,7 @@ module.exports = function designerConfiguration(server,next) {
       });
       var baseModel = util.checkModelWithPlural(req.app, model);
       var actualModel = loopback.findModel(baseModel, req.callContext);
+      actualModel = actualModel ? actualModel : server.models[baseModel];
       var result = actualModel ? modelEndPoints[actualModel.pluralModelName] : modelEndPoints;
       res.send(result);
     });
@@ -366,7 +371,7 @@ module.exports = function designerConfiguration(server,next) {
       });
     });
 
-    
+
     // api to create default UI for model using default-form template and adding it to NavigationLink.
     server.post(designerConfig.mountPath + '/createDefaultUI', function (req, res) {
       var options = req.callContext;
@@ -382,6 +387,7 @@ module.exports = function designerConfiguration(server,next) {
       }
 
       var model = loopback.findModel(modelName, options);
+      model = model ? model : server.models[modelName];
       if (!model) {
         err = new Error();
         err.error = {
@@ -449,13 +455,13 @@ module.exports = function designerConfiguration(server,next) {
     server.get(designerConfig.mountPath + '/elements', function prospectElements(req, res) {
       res.json(module.prospectElements);
     });
-    
+
     ifDirectoryExist(DesignerPath + '/' + designerName, function checkIfDirectoryExist(dirname, status) {
       if (status) {
         server.once('started', function DesignerServerStarted() {
           var baseUrl = server.get('url').replace(/\/$/, '');
           log.info('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
-          console.log('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
+          // console.log('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
         });
       }
       next();
@@ -509,7 +515,7 @@ module.exports = function designerConfiguration(server,next) {
         item.import = designerConfig.subPath + item.import;
       });
     }
-    
+
     ifDirectoryExist(designerConfig.installationPath + '/' + designerName, function directorySearch(dirname, status) {
       if (status) {
         setDesignerPath(designerConfig, server);
@@ -518,7 +524,7 @@ module.exports = function designerConfiguration(server,next) {
         next();
       }
     });
-  }else{
+  } else {
     next();
   }
 };

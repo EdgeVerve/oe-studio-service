@@ -329,10 +329,9 @@ describe(chalk.blue('oe-studio-test'), function () {
         if (err) {
           done(err);
         } else {
-          console.log(result.body);
           expect(result.body).to.exist;
-          expect(result.body.key).not.to.be.undefined;
-          expect(result.body.key.type).to.be.equal('String');
+          expect(result.body.name).not.to.be.undefined;
+          expect(result.body.name.type).to.be.equal('String');
           done();
         }
       });
