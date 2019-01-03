@@ -23,7 +23,6 @@
     },
     "validations": [],
 	"isFrameworkModel": true,
-    "autoscope": ["tenantId"],
     "relations": {},
     "acls": [],
     "methods": {}

@@ -17,8 +17,7 @@
     "async": "^2.5.0",
     "camelcase": "^3.0.0",
     "lodash": "4.17.10",
-    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master",
-    "oe-model-personalization": "git+http://evgit/oec-next/oe-model-personalization.git#master"
+    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
