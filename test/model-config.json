@@ -33,9 +33,5 @@
   "Role": {
     "dataSource": "db",
     "public": false
-  },
-  "Customer": {
-    "dataSource": "db",
-    "public": false
   }
 }

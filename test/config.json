@@ -19,5 +19,12 @@
     "cors": false,
     "handleErrors": false
   },
+  "enableDesigner": true,
+  "designer": {
+      "installationPath": "client/bower_components",
+      "mountPath": "/designer",
+      "templatePath": [],
+      "modules": []
+  },
   "legacyExplorer": false
 }

@@ -17,10 +17,10 @@ var designerName = 'oe-studio';
 var util = require('oe-model-personalization/lib/utils');
 
 
-module.exports = function designerConfiguration(server) {
+module.exports = function designerConfiguration(server,next) {
   var isStudioEnabled = server.get('enableDesigner');
   var designerConfig = server.get('designer');
-
+  
   function convertVerb(verb) {
     if (verb.toLowerCase() === 'all') {
       return 'POST';
@@ -65,7 +65,7 @@ module.exports = function designerConfiguration(server) {
 
 
   function setDesignerPath(designerConfig, server) {
-    var polymerVersion = (server.get('client').polymerVersion === 3) ? 3 : 1;
+    var polymerVersion = (server.get('client') && server.get('client').polymerVersion === 3) ? 3 : 1;
     var DesignerPath = designerConfig.installationPath;
     if (!designerConfig.templatePath || designerConfig.templatePath.length === 0) {
       designerConfig.templatePath = [DesignerPath + '/' + designerName + '/templates'];
@@ -78,7 +78,7 @@ module.exports = function designerConfiguration(server) {
     }
 
     var templatesData = [];
-    var polymerRegex = (server.get('client').polymerVersion === 3) ?  /\:componentName/ : /Polymer\s*\(/;
+    var polymerRegex = (server.get('client') && server.get('client').polymerVersion === 3) ?  /\:componentName/ : /Polymer\s*\(/;
     designerConfig.templatePath.forEach(function templatePathForEach(tPath) {
       ifDirectoryExist(tPath, function ifDirectoryExistFn(dirName, status) {
         if (status) {
@@ -96,7 +96,7 @@ module.exports = function designerConfiguration(server) {
                   encoding: 'utf-8'
                 })
               };
-              
+
               if (tplRecord.content && polymerRegex.test(tplRecord.content)) {
                 if (tplRecord.content.indexOf(':modelAlias') >= 0) {
                   tplRecord.type = 'form';
@@ -366,7 +366,7 @@ module.exports = function designerConfiguration(server) {
       });
     });
 
-
+    
     // api to create default UI for model using default-form template and adding it to NavigationLink.
     server.post(designerConfig.mountPath + '/createDefaultUI', function (req, res) {
       var options = req.callContext;
@@ -449,21 +449,23 @@ module.exports = function designerConfiguration(server) {
     server.get(designerConfig.mountPath + '/elements', function prospectElements(req, res) {
       res.json(module.prospectElements);
     });
-
+    
     ifDirectoryExist(DesignerPath + '/' + designerName, function checkIfDirectoryExist(dirname, status) {
       if (status) {
         server.once('started', function DesignerServerStarted() {
           var baseUrl = server.get('url').replace(/\/$/, '');
           log.info('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
+          console.log('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
         });
       }
+      next();
     });
   }
 
   if (isStudioEnabled) {
     log.info('Designer enabled from config');
     var defaultConfig = {
-      installationPath: (designerConfig.studioVersion === 3) ? 'client/node_modules' :'client/bower_components',
+      installationPath: (designerConfig.studioVersion === 3) ? 'client/node_modules' : 'client/bower_components',
       mountPath: '/designer',
       templatePath: [],
       stylePath: []
@@ -507,14 +509,17 @@ module.exports = function designerConfiguration(server) {
         item.import = designerConfig.subPath + item.import;
       });
     }
-
+    
     ifDirectoryExist(designerConfig.installationPath + '/' + designerName, function directorySearch(dirname, status) {
       if (status) {
         setDesignerPath(designerConfig, server);
       } else {
         log.warn('Designer not installed at [' + designerConfig.installationPath + '/' + designerName + ']');
+        next();
       }
     });
+  }else{
+    next();
   }
 };
 
