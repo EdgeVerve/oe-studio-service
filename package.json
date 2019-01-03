@@ -1,0 +1,50 @@
+{
+  "name": "oe-studio-service",
+  "version": "0.0.1",
+  "description": "oe-cloud module for enabling and supporting oe-studio",
+  "engines": {
+    "node": ">=6"
+  },
+  "main": "index.js",
+  "scripts": {
+    "pretest": "npm install --no-optional",
+    "test": "mocha test/test.js",
+    "lint": "eslint .",
+    "fix-lint": "eslint --fix .",
+    "grunt-cover": "grunt test-with-coverage"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "camelcase": "^3.0.0",
+    "lodash": "4.17.10",
+    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master",
+    "oe-model-personalization": "git+http://evgit/oec-next/oe-model-personalization.git#master"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "chai": "^3.4.1",
+    "chai-datetime": "^1.4.0",
+    "chai-things": "^0.2.0",
+    "chalk": "^1.1.1",
+    "eslint": "^4.10.0",
+    "grunt": "^1.0.0",
+    "grunt-banner": "^0.6.0",
+    "grunt-cli": "^1.0.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-jsbeautifier": "^0.2.12",
+    "grunt-mkdir": "^1.0.0",
+    "grunt-mocha-istanbul": "^5.0.2",
+    "grunt-mocha-test": "^0.13.2",
+    "istanbul": "0.4.1",
+    "mocha": "^3.4.2",
+    "superagent-defaults": "^0.1.14",
+    "supertest": "^1.1.0",
+    "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@evgit:oec-next/oe-studio-service.git"
+  },
+  "license": "MIT"
+}
