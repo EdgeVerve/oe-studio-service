@@ -76,8 +76,25 @@ describe(chalk.blue('oe-studio-test'), function () {
       });
   });
 
-
   it('returns designer index page', function (done) {
+    var getUrl = designerMountPath;
+    api.set('Authorization', accessToken)
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          done();
+        }
+      });
+  });
+
+  it('returns designer index page with subPath', function (done) {
+    oecloud.set('subPath',"/test");
+    var designerConfig = oecloud.get("designer");
+    designerConfig.subPath = "/test";
+    oecloud.set('designer',designerConfig);
     var getUrl = designerMountPath;
     api.set('Authorization', accessToken)
       .get(getUrl)
@@ -131,7 +148,6 @@ describe(chalk.blue('oe-studio-test'), function () {
       });
   });
 
-  
   it('returns designer config', function (done) {
     var getUrl = designerMountPath + '/config';
     api.set('Authorization', accessToken)
@@ -192,7 +208,6 @@ describe(chalk.blue('oe-studio-test'), function () {
         }
       });
   });
-
   
   it('returns assets data', function (done) {
     var getUrl = designerMountPath + '/assets';
@@ -305,7 +320,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({file:"client/bower_components/test.html", data: "my-file-dummy-content"})
+      .send({file:"client/test.html", data: "my-file-dummy-content"})
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -317,6 +332,45 @@ describe(chalk.blue('oe-studio-test'), function () {
         }
       });
   });
+
+  it('save-theme saves the file in style app-theme.html', function (done) {
+    var postUrl = designerMountPath + '/save-theme';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({data: "Test-theme file"})
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.status).to.be.true;
+          done();
+        }
+      });
+  });
+
+  it('save-file saves the file', function (done) {
+    var postUrl = designerMountPath + '/save-file';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({file:"client/test.html", data: "my-file-dummy-content"})
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.status).to.be.true;
+          done();
+        }
+      });
+  });
+
 
   it('returns properties', function (done) {
     var getUrl = designerMountPath + '/properties/DesignerElements';

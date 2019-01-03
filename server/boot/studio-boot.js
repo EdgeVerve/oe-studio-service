@@ -344,20 +344,6 @@ module.exports = function designerConfiguration(server, next) {
       });
     });
 
-    server.post(designerConfig.mountPath + '/apply-theme', function saveTheme(req, res) {
-      var content = fs.readFileSync(req.body.file, {
-        encoding: 'utf-8'
-      });
-      fs.writeFile('client/styles/app-theme.html', content, function writeFileCbFn(err) {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          res.json({
-            status: true
-          });
-        }
-      });
-    });
 
     server.post(designerConfig.mountPath + '/save-file', function saveFile(req, res) {
       fs.writeFile(req.body.file, req.body.data, function writeFileCbFn(err) {

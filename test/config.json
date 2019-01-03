@@ -21,11 +21,12 @@
   },
   "enableDesigner": true,
   "designer": {
-      "installationPath": "client/bower_components",
+      "installationPath": "client",
       "mountPath": "/designer",
       "templatePath": [],
       "modules": [],
-      "assetPath":["client/bower_components/images"]
+      "assetPath":["client/images"],
+      "subPath":"/test"
   },
   "legacyExplorer": false
 }
