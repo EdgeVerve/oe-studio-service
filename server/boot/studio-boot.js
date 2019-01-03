@@ -14,7 +14,7 @@ var glob = require('glob');
 var logger = require('oe-logger');
 var log = logger('oe-studio');
 var designerName = 'oe-studio';
-var util = require('oe-model-personalization/lib/utils');
+var util = require('../../lib/utils');
 
 
 module.exports = function designerConfiguration(server) {
@@ -517,4 +517,3 @@ module.exports = function designerConfiguration(server) {
     });
   }
 };
-

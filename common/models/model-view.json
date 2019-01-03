@@ -23,10 +23,8 @@
     },
     "validations": [],
     "mixins": {
-        "DataPersonalizationMixin": true
     },
 	"isFrameworkModel": true,
-    "autoscope": ["tenantId"],
     "relations": {},
     "acls": [],
     "methods": {}
