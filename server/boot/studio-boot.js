@@ -96,7 +96,7 @@ module.exports = function designerConfiguration(server) {
                   encoding: 'utf-8'
                 })
               };
-              
+
               if (tplRecord.content && polymerRegex.test(tplRecord.content)) {
                 if (tplRecord.content.indexOf(':modelAlias') >= 0) {
                   tplRecord.type = 'form';
@@ -463,7 +463,7 @@ module.exports = function designerConfiguration(server) {
   if (isStudioEnabled) {
     log.info('Designer enabled from config');
     var defaultConfig = {
-      installationPath: (designerConfig.studioVersion === 3) ? 'client/node_modules' :'client/bower_components',
+      installationPath: (designerConfig.studioVersion === 3) ? 'client/node_modules' : 'client/bower_components',
       mountPath: '/designer',
       templatePath: [],
       stylePath: []
