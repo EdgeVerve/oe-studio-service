@@ -1,6 +1,5 @@
 var oecloud = require('oe-cloud');
 var loopback = require('loopback');
-oecloud.attachMixinsToBaseEntity("SkeletonMixin");
 
 oecloud.observe('loaded', function (ctx, next) {
 console.log("oe-cloud modules loaded");
@@ -140,4 +139,3 @@ describe(chalk.blue('SkeletonTest Started'), function (done) {
     });
   });
 });
-
