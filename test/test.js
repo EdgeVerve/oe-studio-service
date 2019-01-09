@@ -8,17 +8,17 @@ var oecloud = require('oe-cloud');
 
 oecloud.observe('loaded', function (ctx, next) {
   console.log("oe-cloud modules loaded");
-    return next();
-  })
+  return next();
+})
 
-  oecloud.boot(__dirname, function (err) {
-    if (err) {
-      console.log(err);
-      process.exit(1);
-    }
-    oecloud.start();
-    oecloud.emit('test-start');
-  });
+oecloud.boot(__dirname, function (err) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
+  oecloud.start();
+  oecloud.emit('test-start');
+});
 
 
 
@@ -38,29 +38,35 @@ var accessToken;
 describe(chalk.blue('oe-studio-test'), function () {
   this.timeout(10000);
 
+  before("wait for server to start",function(done){
+    oecloud.on("test-start",function(){
+      done();
+    })
+  });
+
   it('t1 create user admin/admin with /default tenant', function (done) {
     var url = basePath + '/users';
     api.set('Accept', 'application/json')
-    .post(url)
-    .send([{ username: "admin", password: "admin", email: "admin@admin.com" }])
-    .end(function (err, response) {
-      var result = response.body;
-      expect(result[0].id).to.be.defined;
-      done();
-    });
+      .post(url)
+      .send([{ username: "admin", password: "admin", email: "admin@admin.com" }])
+      .end(function (err, response) {
+        var result = response.body;
+        expect(result[0].id).to.be.defined;
+        done();
+      });
   });
 
   it('t2 Login with admin credentials', function (done) {
     var url = basePath + '/users/login';
     api.set('Accept', 'application/json')
-    .post(url)
-    .send({ username: "admin", password: "admin" })
-    .end(function (err, response) {
-      var result = response.body;
-      accessToken = result.id;
-      expect(accessToken).to.be.defined;
-      done();
-    });
+      .post(url)
+      .send({ username: "admin", password: "admin" })
+      .end(function (err, response) {
+        var result = response.body;
+        accessToken = result.id;
+        expect(accessToken).to.be.defined;
+        done();
+      });
   });
 
   xit('redirects to login page when not logged in', function (done) {
@@ -91,10 +97,10 @@ describe(chalk.blue('oe-studio-test'), function () {
   });
 
   it('returns designer index page with subPath', function (done) {
-    oecloud.set('subPath',"/test");
+    oecloud.set('subPath', "/test");
     var designerConfig = oecloud.get("designer");
     designerConfig.subPath = "/test";
-    oecloud.set('designer',designerConfig);
+    oecloud.set('designer', designerConfig);
     var getUrl = designerMountPath;
     api.set('Authorization', accessToken)
       .get(getUrl)
@@ -114,18 +120,18 @@ describe(chalk.blue('oe-studio-test'), function () {
       .get(getUrl)
       .expect(302)
       .end(function (err, result) {
-      
+
         if (err) {
           done(err);
         } else {
           expect(result.header.location).to.exist;
           expect(result.header.location).to.equal(designerMountPath);
-          
+
           done();
         }
       });
   });
-  
+
   it('returns API endpoints for model', function (done) {
     var getUrl = designerMountPath + '/routes/DesignerElements';
     api.set('Authorization', accessToken)
@@ -140,8 +146,8 @@ describe(chalk.blue('oe-studio-test'), function () {
           expect(result.status).to.equal(200);
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
-            return (item.path && item.path.indexOf('/DesignerElements')===0);
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.path && item.path.indexOf('/DesignerElements') === 0);
           });
           done();
         }
@@ -180,7 +186,7 @@ describe(chalk.blue('oe-studio-test'), function () {
         } else {
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
+          expect(result.body).all.to.satisfy(function (item) {
             return (item.file && item.path && item.content && item.type);
           });
           done();
@@ -201,14 +207,14 @@ describe(chalk.blue('oe-studio-test'), function () {
         } else {
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
+          expect(result.body).all.to.satisfy(function (item) {
             return (item.file && item.path);
           });
           done();
         }
       });
   });
-  
+
   it('returns assets data', function (done) {
     var getUrl = designerMountPath + '/assets';
     api.set('Authorization', accessToken)
@@ -243,7 +249,7 @@ describe(chalk.blue('oe-studio-test'), function () {
         } else {
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
+          expect(result.body).all.to.satisfy(function (item) {
             return (item.file && item.path && item.size);
           });
           done();
@@ -264,7 +270,7 @@ describe(chalk.blue('oe-studio-test'), function () {
         } else {
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
+          expect(result.body).all.to.satisfy(function (item) {
             return (item.file && item.path && item.size);
           });
           done();
@@ -285,7 +291,7 @@ describe(chalk.blue('oe-studio-test'), function () {
         } else {
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
+          expect(result.body).all.to.satisfy(function (item) {
             return (item.file && item.path && item.size);
           });
           done();
@@ -306,7 +312,7 @@ describe(chalk.blue('oe-studio-test'), function () {
         } else {
           expect(result.body).to.exist;
           expect(result.body).to.be.an('array');
-          expect(result.body).all.to.satisfy(function(item){
+          expect(result.body).all.to.satisfy(function (item) {
             return (item.name && item.tag && item.category && item.config && item.config.importUrl);
           });
           done();
@@ -320,7 +326,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({file:"client/test.html", data: "my-file-dummy-content"})
+      .send({ file: "client/test.html", data: "my-file-dummy-content" })
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -339,7 +345,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({data: "Test-theme file"})
+      .send({ data: "Test-theme file" })
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -358,7 +364,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({file:"client/test.html", data: "my-file-dummy-content"})
+      .send({ file: "client/test.html", data: "my-file-dummy-content" })
       .expect(200)
       .end(function (err, result) {
         if (err) {

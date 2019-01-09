@@ -6,6 +6,6 @@ oecloud.observe('loaded', function (ctx, next) {
 
 oecloud.boot(__dirname, function (err) {
   oecloud.start();
-  oecloud.emit('test-start');
+  oecloud.emit('test-server-started');
 });
 

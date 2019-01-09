@@ -5,6 +5,7 @@
  *
  */
 
+/*   eslint-disable no-console */
 
 var loopback = require('loopback');
 var fs = require('fs');
@@ -447,7 +448,7 @@ module.exports = function designerConfiguration(server, next) {
         server.once('started', function DesignerServerStarted() {
           var baseUrl = server.get('url').replace(/\/$/, '');
           log.info('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
-          // console.log('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
+          console.log('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
         });
       }
       next();
@@ -507,6 +508,7 @@ module.exports = function designerConfiguration(server, next) {
         setDesignerPath(designerConfig, server);
       } else {
         log.warn('Designer not installed at [' + designerConfig.installationPath + '/' + designerName + ']');
+        console.warn('Designer not installed at [' + designerConfig.installationPath + '/' + designerName + ']');
         next();
       }
     });
