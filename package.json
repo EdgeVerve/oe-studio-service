@@ -42,7 +42,10 @@
     "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master",
     "oe-metadata-ui": "git+http://evgit/oec-next/oe-metadata-ui.git#master",
     "superagent-defaults": "^0.1.14",
-    "supertest": "^1.1.0"
+    "supertest": "^1.1.0",
+    "loopback-connector-mongodb": "git+http://evgit/oecloud.io/loopback-connector-mongodb.git#master",
+    "oe-connector-oracle": "git+http://evgit/oecloud.io/oe-connector-oracle.git#master",
+    "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master"
   },
   "repository": {
     "type": "git",
