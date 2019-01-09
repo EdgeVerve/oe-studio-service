@@ -19,5 +19,14 @@
     "cors": false,
     "handleErrors": false
   },
+  "enableDesigner": true,
+  "designer": {
+      "installationPath": "client",
+      "mountPath": "/designer",
+      "templatePath": [],
+      "modules": [],
+      "assetPath":["client/images"],
+      "subPath":"/test"
+  },
   "legacyExplorer": false
 }

@@ -1,11 +1,15 @@
+/**
+ * @license
+ * ©2018-2019 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+ * Bangalore, India. All Rights Reserved.
+ */
+
 var oecloud = require('oe-cloud');
-var loopback = require('loopback');
 
 oecloud.observe('loaded', function (ctx, next) {
-console.log("oe-cloud modules loaded");
+  console.log("oe-cloud modules loaded");
   return next();
 })
-
 
 oecloud.boot(__dirname, function (err) {
   if (err) {
@@ -20,122 +24,429 @@ oecloud.boot(__dirname, function (err) {
 
 var chalk = require('chalk');
 var chai = require('chai');
-var async = require('async');
-chai.use(require('chai-things'));
-
 var expect = chai.expect;
-
-var app = oecloud;
+chai.use(require('chai-things'));
 var defaults = require('superagent-defaults');
 var supertest = require('supertest');
-var Customer;
-var api = defaults(supertest(app));
-var basePath = app.get('restApiRoot');
-var url = basePath + '/Customers';
+var basePath = oecloud.get('restApiRoot');
 
-function deleteAllUsers(done) {
-  var userModel = loopback.findModel("User");
-  userModel.destroyAll({}, {}, function (err) {
-    return done(err);
-  });
-}
+var designerMountPath = oecloud.get('designer').mountPath;
+var api = defaults(supertest(oecloud));
 
-describe(chalk.blue('SkeletonTest Started'), function (done) {
+var options;
+var accessToken;
+describe(chalk.blue('oe-studio-test'), function () {
   this.timeout(10000);
-  before('wait for boot scripts to complete', function (done) {
-    app.on('test-start', function () {
-      Customer = loopback.findModel("Customer");
-      deleteAllUsers(function (err) {
-	    return done(err);
-      });
-    });
-  });
 
-  afterEach('destroy context', function (done) {
-    done();
+  before("wait for server to start",function(done){
+    oecloud.on("test-start",function(){
+      done();
+    })
   });
 
   it('t1 create user admin/admin with /default tenant', function (done) {
     var url = basePath + '/users';
     api.set('Accept', 'application/json')
-    .post(url)
-    .send([{ username: "admin", password: "admin", email: "admin@admin.com" },
-    { username: "evuser", password: "evuser", email: "evuser@evuser.com" },
-    { username: "infyuser", password: "infyuser", email: "infyuser@infyuser.com" },
-    { username: "bpouser", password: "bpouser", email: "bpouser@bpouser.com" }])
-    .end(function (err, response) {
-
-      var result = response.body;
-      expect(result[0].id).to.be.defined;
-      expect(result[1].id).to.be.defined;
-      expect(result[2].id).to.be.defined;
-      expect(result[3].id).to.be.defined;
-      done();
-    });
+      .post(url)
+      .send([{ username: "admin", password: "admin", email: "admin@admin.com" }])
+      .end(function (err, response) {
+        var result = response.body;
+        expect(result[0].id).to.be.defined;
+        done();
+      });
   });
 
-  var adminToken;
   it('t2 Login with admin credentials', function (done) {
     var url = basePath + '/users/login';
     api.set('Accept', 'application/json')
-    .post(url)
-    .send({ username: "admin", password: "admin" })
-    .end(function (err, response) {
-      var result = response.body;
-      adminToken = result.id;
-      expect(adminToken).to.be.defined;
-      done();
-    });
+      .post(url)
+      .send({ username: "admin", password: "admin" })
+      .end(function (err, response) {
+        var result = response.body;
+        accessToken = result.id;
+        expect(accessToken).to.be.defined;
+        done();
+      });
+  });
+
+  xit('redirects to login page when not logged in', function (done) {
+    var getUrl = designerMountPath;
+    api.get(getUrl)
+      .expect(302)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          done();
+        }
+      });
+  });
+
+  it('returns designer index page', function (done) {
+    var getUrl = designerMountPath;
+    api.set('Authorization', accessToken)
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          done();
+        }
+      });
+  });
+
+  it('returns designer index page with subPath', function (done) {
+    oecloud.set('subPath', "/test");
+    var designerConfig = oecloud.get("designer");
+    designerConfig.subPath = "/test";
+    oecloud.set('designer', designerConfig);
+    var getUrl = designerMountPath;
+    api.set('Authorization', accessToken)
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          done();
+        }
+      });
+  });
+
+  it('Redirects to designer.mountPath when designer.html is requested', function (done) {
+    var getUrl = '/designer.html';
+    api.set('Authorization', accessToken)
+      .get(getUrl)
+      .expect(302)
+      .end(function (err, result) {
+
+        if (err) {
+          done(err);
+        } else {
+          expect(result.header.location).to.exist;
+          expect(result.header.location).to.equal(designerMountPath);
+
+          done();
+        }
+      });
+  });
+
+  it('returns API endpoints for model', function (done) {
+    var getUrl = designerMountPath + '/routes/DesignerElements';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.status).to.equal(200);
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.path && item.path.indexOf('/DesignerElements') === 0);
+          });
+          done();
+        }
+      });
+  });
+
+  it('returns designer config', function (done) {
+    var getUrl = designerMountPath + '/config';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('object');
+          expect(result.body.mountPath).to.equal(designerMountPath);
+          done();
+        }
+      });
+  });
+
+  it('returns template data', function (done) {
+    var getUrl = designerMountPath + '/templates';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.file && item.path && item.content && item.type);
+          });
+          done();
+        }
+      });
+  });
+
+  it('returns style data', function (done) {
+    var getUrl = designerMountPath + '/styles';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.file && item.path);
+          });
+          done();
+        }
+      });
+  });
+
+  it('returns assets data', function (done) {
+    var getUrl = designerMountPath + '/assets';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('object');
+          expect(result.body.images).to.be.ok;
+          expect(result.body.videos).to.be.ok;
+          expect(result.body.audios).to.be.ok;
+          done();
+        }
+      });
+  });
+
+  it('returns images data', function (done) {
+    var getUrl = designerMountPath + '/assets/images';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.file && item.path && item.size);
+          });
+          done();
+        }
+      });
+  });
+
+  it('returns video data', function (done) {
+    var getUrl = designerMountPath + '/assets/videos';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.file && item.path && item.size);
+          });
+          done();
+        }
+      });
+  });
+
+  it('returns audio data', function (done) {
+    var getUrl = designerMountPath + '/assets/audios';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.file && item.path && item.size);
+          });
+          done();
+        }
+      });
+  });
+
+  it('returns elements', function (done) {
+    var getUrl = designerMountPath + '/elements';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body).to.be.an('array');
+          expect(result.body).all.to.satisfy(function (item) {
+            return (item.name && item.tag && item.category && item.config && item.config.importUrl);
+          });
+          done();
+        }
+      });
+  });
+
+  it('save-file saves the file', function (done) {
+    var postUrl = designerMountPath + '/save-file';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({ file: "client/test.html", data: "my-file-dummy-content" })
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.status).to.be.true;
+          done();
+        }
+      });
+  });
+
+  it('save-theme saves the file in style app-theme.html', function (done) {
+    var postUrl = designerMountPath + '/save-theme';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({ data: "Test-theme file" })
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.status).to.be.true;
+          done();
+        }
+      });
+  });
+
+  it('save-file saves the file', function (done) {
+    var postUrl = designerMountPath + '/save-file';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({ file: "client/test.html", data: "my-file-dummy-content" })
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.status).to.be.true;
+          done();
+        }
+      });
   });
 
 
-  var infyToken;
-  it('t3 Login with infy credentials', function (done) {
-    var url = basePath + '/users/login';
-    api.set('Accept', 'application/json')
-    .post(url)
-    .send({ username: "infyuser", password: "infyuser" })
-    .end(function (err, response) {
-      var result = response.body;
-      infyToken = result.id;
-      expect(infyToken).to.be.defined;
-      done();
-    });
+  it('returns properties', function (done) {
+    var getUrl = designerMountPath + '/properties/DesignerElements';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .get(getUrl)
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.name).not.to.be.undefined;
+          expect(result.body.name.type).to.be.equal('String');
+          done();
+        }
+      });
   });
 
-  var evToken;
-  it('t4 Login with ev credentials', function (done) {
-    var url = basePath + '/users/login';
-    api.set('Accept', 'application/json')
-    .post(url)
-    .send({ username: "evuser", password: "evuser" })
-    .end(function (err, response) {
-      var result = response.body;
-      evToken = result.id;
-      expect(evToken).to.be.defined;
-      done();
-    });
+  it('error if model not present for default UI', function (done) {
+    var postUrl = designerMountPath + '/createDefaultUI';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({ modelName: "TestUIModel" })
+      .expect(500)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.error.message).to.be.equal('Model not found');
+          done();
+        }
+      });
   });
 
-
-  var bpoToken;
-  it('t5 Login with bpo credentials', function (done) {
-    var url = basePath + '/users/login';
-    api.set('Accept', 'application/json')
-    .post(url)
-    .send({ username: "bpouser", password: "bpouser" })
-    .end(function (err, response) {
-      var result = response.body;
-      bpoToken = result.id;
-      expect(bpoToken).to.be.defined;
-      done();
-    });
+  it('create default UI', function (done) {
+    var postUrl = designerMountPath + '/createDefaultUI';
+    api.set('Authorization', accessToken)
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .post(postUrl)
+      .send({ modelName: "ModelDefinition" })
+      .expect(200)
+      .end(function (err, result) {
+        if (err) {
+          done(err);
+        } else {
+          expect(result.body).to.exist;
+          expect(result.body.message).to.be.equal('Default UI created');
+          api.set('Authorization', accessToken)
+            .set('Content-Type', 'application/json')
+            .set('Accept', 'application/json')
+            .post(postUrl)
+            .send({ modelName: "ModelDefinition" })
+            .expect(200)
+            .end(function (err, result) {
+              if (err) {
+                done(err);
+              } else {
+                expect(result.body).to.exist;
+                expect(result.body.message).to.be.equal('Default UI already exists');
+                done();
+              }
+            });
+        }
+      });
   });
 
-  it('t6 skeleton test case', function (done) {
-    var skeleton = loopback.findModel("Skeleton");
-    skeleton.find({}, {}, function (err, r) {
-      return done(err);
-    });
-  });
 });

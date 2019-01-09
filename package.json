@@ -17,7 +17,8 @@
     "async": "^2.5.0",
     "camelcase": "^3.0.0",
     "lodash": "4.17.10",
-    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master"
+    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master",
+    "oe-logger": "git+http://evgit/oec-next/oe-logger.git#master"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -36,7 +37,10 @@
     "grunt-mocha-istanbul": "^5.0.2",
     "grunt-mocha-test": "^0.13.2",
     "istanbul": "0.4.1",
+    "loopback-connector-mongodb": "^3.9.2",
     "mocha": "^3.4.2",
+    "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master",
+    "oe-metadata-ui": "git+http://evgit/oec-next/oe-metadata-ui.git#master",
     "superagent-defaults": "^0.1.14",
     "supertest": "^1.1.0",
     "loopback-connector-mongodb": "git+http://evgit/oecloud.io/loopback-connector-mongodb.git#master",

@@ -4,6 +4,10 @@
     "enabled": true
   },
   {
+    "path": "oe-metadata-ui",
+    "enabled": true
+  },
+  {
     "path": "./",
     "forceLoad": "index.js",
     "enabled": true

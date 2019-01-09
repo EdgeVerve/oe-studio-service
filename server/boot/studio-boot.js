@@ -5,6 +5,7 @@
  *
  */
 
+/*   eslint-disable no-console */
 
 var loopback = require('loopback');
 var fs = require('fs');
@@ -15,11 +16,14 @@ var logger = require('oe-logger');
 var log = logger('oe-studio');
 var designerName = 'oe-studio';
 var util = require('../../lib/utils');
+var bodyParser = require('body-parser');
 
+module.exports = function designerConfiguration(server, next) {
+  server.use(bodyParser.json());
+  server.use(bodyParser.urlencoded({ extended: true }));
 
-module.exports = function designerConfiguration(server) {
   var isStudioEnabled = server.get('enableDesigner');
-  var designerConfig = server.get('designer');
+  var designerConfig = server.get('designer') || {};
 
   function convertVerb(verb) {
     if (verb.toLowerCase() === 'all') {
@@ -45,6 +49,7 @@ module.exports = function designerConfiguration(server) {
   function findAndCreate(modelName, data, options) {
     return new Promise(function (resolve, reject) {
       var model = loopback.findModel(modelName, options);
+      model = model ? model : server.models[modelName];
       model.findOne({ where: data }, options, function (err, res) {
         if (err) {
           reject(err);
@@ -65,7 +70,7 @@ module.exports = function designerConfiguration(server) {
 
 
   function setDesignerPath(designerConfig, server) {
-    var polymerVersion = (server.get('client').polymerVersion === 3) ? 3 : 1;
+    var polymerVersion = (server.get('client') && server.get('client').polymerVersion === 3) ? 3 : 1;
     var DesignerPath = designerConfig.installationPath;
     if (!designerConfig.templatePath || designerConfig.templatePath.length === 0) {
       designerConfig.templatePath = [DesignerPath + '/' + designerName + '/templates'];
@@ -78,7 +83,7 @@ module.exports = function designerConfiguration(server) {
     }
 
     var templatesData = [];
-    var polymerRegex = (server.get('client').polymerVersion === 3) ?  /\:componentName/ : /Polymer\s*\(/;
+    var polymerRegex = (server.get('client') && server.get('client').polymerVersion === 3) ?  /\:componentName/ : /Polymer\s*\(/;
     designerConfig.templatePath.forEach(function templatePathForEach(tPath) {
       ifDirectoryExist(tPath, function ifDirectoryExistFn(dirName, status) {
         if (status) {
@@ -222,7 +227,7 @@ module.exports = function designerConfiguration(server) {
       var model = req.params.model;
       var baseModel = util.checkModelWithPlural(req.app, model);
       var actualModel = loopback.findModel(baseModel, req.callContext);
-
+      actualModel = actualModel ? actualModel : server.models[baseModel];
       var r = {};
       for (var p in actualModel.definition.properties) {
         if (actualModel.definition.properties.hasOwnProperty(p)) {
@@ -307,6 +312,7 @@ module.exports = function designerConfiguration(server) {
       });
       var baseModel = util.checkModelWithPlural(req.app, model);
       var actualModel = loopback.findModel(baseModel, req.callContext);
+      actualModel = actualModel ? actualModel : server.models[baseModel];
       var result = actualModel ? modelEndPoints[actualModel.pluralModelName] : modelEndPoints;
       res.send(result);
     });
@@ -339,20 +345,6 @@ module.exports = function designerConfiguration(server) {
       });
     });
 
-    server.post(designerConfig.mountPath + '/apply-theme', function saveTheme(req, res) {
-      var content = fs.readFileSync(req.body.file, {
-        encoding: 'utf-8'
-      });
-      fs.writeFile('client/styles/app-theme.html', content, function writeFileCbFn(err) {
-        if (err) {
-          res.status(500).send(err);
-        } else {
-          res.json({
-            status: true
-          });
-        }
-      });
-    });
 
     server.post(designerConfig.mountPath + '/save-file', function saveFile(req, res) {
       fs.writeFile(req.body.file, req.body.data, function writeFileCbFn(err) {
@@ -382,6 +374,7 @@ module.exports = function designerConfiguration(server) {
       }
 
       var model = loopback.findModel(modelName, options);
+      model = model ? model : server.models[modelName];
       if (!model) {
         err = new Error();
         err.error = {
@@ -455,8 +448,10 @@ module.exports = function designerConfiguration(server) {
         server.once('started', function DesignerServerStarted() {
           var baseUrl = server.get('url').replace(/\/$/, '');
           log.info('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
+          console.log('Browse Designer at %s%s', baseUrl, designerConfig.mountPath);
         });
       }
+      next();
     });
   }
 
@@ -513,7 +508,11 @@ module.exports = function designerConfiguration(server) {
         setDesignerPath(designerConfig, server);
       } else {
         log.warn('Designer not installed at [' + designerConfig.installationPath + '/' + designerName + ']');
+        console.warn('Designer not installed at [' + designerConfig.installationPath + '/' + designerName + ']');
+        next();
       }
     });
+  } else {
+    next();
   }
 };

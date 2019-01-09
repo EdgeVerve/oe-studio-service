@@ -22,8 +22,6 @@
         }
     },
     "validations": [],
-    "mixins": {
-    },
 	"isFrameworkModel": true,
     "relations": {},
     "acls": [],

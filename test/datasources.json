@@ -11,8 +11,8 @@
   "db": {
     "host": "localhost",
     "port": 27017,
-    "url": "mongodb://localhost:27017/oe-skeleton",
-    "database": "oe-skeleton",
+    "url": "mongodb://localhost:27017/oe-studio",
+    "database": "oe-studio",
     "password": "admin",
     "name": "db",
     "connector": "mongodb",
