@@ -22,7 +22,7 @@ module.exports = function designerConfiguration(server, next) {
   server.use(bodyParser.urlencoded({ extended: true }));
 
   var isStudioEnabled = server.get('enableDesigner');
-  var designerConfig = server.get('designer');
+  var designerConfig = server.get('designer') || {};
 
   function convertVerb(verb) {
     if (verb.toLowerCase() === 'all') {
