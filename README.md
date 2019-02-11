@@ -1,6 +1,6 @@
 # oe-studio
 [![build status](http://evgit/oec-next/oe-studio-service/badges/master/build.svg)](http://evgit/oec-next/oe-studio-service/commits/master)
-[![coverage report](http://evgit/oec-next/oe-metadata-ui/badges/master/coverage.svg)](http://evgit/oec-next/oe-studio-service/commits/master)
+[![coverage report](http://evgit/oec-next/oe-studio-service/badges/master/coverage.svg)](http://evgit/oec-next/oe-studio-service/commits/master)
 
 This is oeCloud working module that enables the usage of oe-studio in the application. 
 
