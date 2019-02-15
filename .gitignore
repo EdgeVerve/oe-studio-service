@@ -1,4 +1,5 @@
 .brackets.json
+package-lock.json
 *.csv
 *.dat
 *.iml
