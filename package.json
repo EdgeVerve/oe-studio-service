@@ -1,6 +1,6 @@
 {
   "name": "oe-studio-service",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "oe-cloud module for enabling and supporting oe-studio",
   "engines": {
     "node": ">=6"
@@ -34,15 +34,15 @@
     "mocha": "5.2.0",
     "superagent-defaults": "0.1.14",
     "supertest": "3.4.2",
-    "oe-metadata-ui": "git+http://evgit/oec-next/oe-metadata-ui.git#master",
-    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master",
+    "oe-metadata-ui": "git+http://evgit/oecloud.io/oe-metadata-ui.git#master",
+    "oe-cloud": "git+http://evgit/oecloud.io/oe-cloud.git#master",
     "loopback-connector-mongodb": "git+http://evgit/oecloud.io/loopback-connector-mongodb.git#master",
     "oe-connector-oracle": "git+http://evgit/oecloud.io/oe-connector-oracle.git#master",
-    "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master"
+    "oe-connector-postgresql": "git+http://evgit/oecloud.io/oe-connector-postgresql.git#master"
   },
   "repository": {
     "type": "git",
-    "url": "git@evgit:oec-next/oe-studio-service.git"
+    "url": "https://github.com/EdgeVerve/oe-studio-service.git"
   },
   "license": "MIT"
 }

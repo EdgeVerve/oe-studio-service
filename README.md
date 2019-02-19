@@ -1,8 +1,8 @@
 # oe-studio
-[![build status](http://evgit/oec-next/oe-studio-service/badges/master/build.svg)](http://evgit/oec-next/oe-studio-service/commits/master)
-[![coverage report](http://evgit/oec-next/oe-studio-service/badges/master/coverage.svg)](http://evgit/oec-next/oe-studio-service/commits/master)
+[![build status](http://evgit/oecloud.io/oe-studio-service/badges/master/build.svg)](http://evgit/oecloud.io/oe-studio-service/commits/master)
+[![coverage report](http://evgit/oecloud.io/oe-studio-service/badges/master/coverage.svg)](http://evgit/oecloud.io/oe-studio-service/commits/master)
 
-This is oeCloud working module that enables the usage of oe-studio in the application. 
+This is oeCloud working module that enables the usage of oe-studio in the application.
 
 ### Getting Started
 
@@ -15,7 +15,7 @@ To use this oe-studio feature in project from this module, you should install th
 ### Testing and Code coverage
 
 ```sh
-$ git clone http://evgit/oec-next/oe-studio.git
+$ git clone http://evgit/oecloud.io/oe-studio.git
 $ cd oe-studio
 $ npm install --no-optional
 $ npm run grunt-cover
@@ -30,10 +30,10 @@ To use oe-studio in your application, you should include this module as a depend
 
 
 ```javascript
-"oe-studio": "git+http://evgit/oec-next/oe-studio.git#master"
+"oe-studio": "git+http://evgit/oecloud.io/oe-studio.git#master"
 ```
 
-You can also install this mixin on command line using npm install. 
+You can also install this mixin on command line using npm install.
 
 
 ```sh
@@ -93,9 +93,9 @@ Currently supported designer config are as follows :
 ...
 ```
 
-##Modules 
+##Modules
 
-The modules array provided in the `config.json` determines the plugins available to oe-studio. This array should contain objects similar to UIRoutes model data. 
+The modules array provided in the `config.json` determines the plugins available to oe-studio. This array should contain objects similar to UIRoutes model data.
 ```
     [{
       'name': 'oe-model-manager',
@@ -126,6 +126,6 @@ __Note : When no modules are specified by the application config , the above plu
 The project is licensed under MIT License, See [LICENSE](./LICENSE) for more details.
 
 ## Contributing
-We welcome contributions. Some of the best ways to contribute are to try things out, file bugs, and join in design conversations. 
+We welcome contributions. Some of the best ways to contribute are to try things out, file bugs, and join in design conversations.
 
 ### [How to contribute](./CONTRIBUTION.md)
