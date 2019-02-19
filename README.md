@@ -30,7 +30,7 @@ To use oe-studio in your application, you should include this module as a depend
 
 
 ```javascript
-"oe-studio": "git+http://evgit/oecloud.io/oe-studio.git#master"
+"oe-studio": "git+http://evgit/oecloud.io/oe-studio.git#2.0.0"
 ```
 
 You can also install this mixin on command line using npm install.
