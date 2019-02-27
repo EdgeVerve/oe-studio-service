@@ -1,4 +1,4 @@
-# oe-studio
+# oe-studio-service
 [![build status](http://evgit/oecloud.io/oe-studio-service/badges/master/build.svg)](http://evgit/oecloud.io/oe-studio-service/commits/master)
 [![coverage report](http://evgit/oecloud.io/oe-studio-service/badges/master/coverage.svg)](http://evgit/oecloud.io/oe-studio-service/commits/master)
 
@@ -15,8 +15,8 @@ To use this oe-studio feature in project from this module, you should install th
 ### Testing and Code coverage
 
 ```sh
-$ git clone http://evgit/oecloud.io/oe-studio.git
-$ cd oe-studio
+$ git clone http://evgit/oecloud.io/oe-studio-service.git
+$ cd oe-studio-service
 $ npm install --no-optional
 $ npm run grunt-cover
 ```
@@ -26,18 +26,18 @@ you can find coverage report in coverage folder.
 
 ### Installation
 
-To use oe-studio in your application, you should include this module as a dependency to your app package.json as shown below.
+To use oe-studio-service in your application, you should include this module as a dependency to your app package.json as shown below.
 
 
 ```javascript
-"oe-studio": "git+http://evgit/oecloud.io/oe-studio.git#master"
+"oe-studio-service": "git+http://evgit/oecloud.io/oe-studio-service.git#master"
 ```
 
 You can also install this mixin on command line using npm install.
 
 
 ```sh
-$ npm install <git path oe-studio> --no-optional
+$ npm install <git path oe-studio-service> --no-optional
 ```
 
 
@@ -50,14 +50,14 @@ app-list.json
 ```javascript
 
   {
-    "path": "oe-studio",
+    "path": "oe-studio-service",
     "enabled": true
   }
 ```
 
 ### Bower dependency
 
-To run the oe-studio you will need oe-studio bower component in your application under the `client/bower_components` path
+To run the oe-studio-service you will need oe-studio bower component in your application under the `client/bower_components` path
 You can install the bower component using the following command.
 
 ```sh
@@ -93,7 +93,7 @@ Currently supported designer config are as follows :
 ...
 ```
 
-##Modules
+## Modules
 
 The modules array provided in the `config.json` determines the plugins available to oe-studio. This array should contain objects similar to UIRoutes model data.
 ```
