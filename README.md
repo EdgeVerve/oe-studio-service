@@ -1,6 +1,4 @@
 # oe-studio
-[![build status](http://evgit/oecloud.io/oe-studio-service/badges/master/build.svg)](http://evgit/oecloud.io/oe-studio-service/commits/master)
-[![coverage report](http://evgit/oecloud.io/oe-studio-service/badges/master/coverage.svg)](http://evgit/oecloud.io/oe-studio-service/commits/master)
 
 This is oeCloud working module that enables the usage of oe-studio in the application.
 
@@ -15,7 +13,7 @@ To use this oe-studio feature in project from this module, you should install th
 ### Testing and Code coverage
 
 ```sh
-$ git clone http://evgit/oecloud.io/oe-studio.git
+$ git clone https://github.com/EdgeVerve/oe-studio.git
 $ cd oe-studio
 $ npm install --no-optional
 $ npm run grunt-cover
@@ -30,7 +28,7 @@ To use oe-studio in your application, you should include this module as a depend
 
 
 ```javascript
-"oe-studio": "git+http://evgit/oecloud.io/oe-studio.git#2.0.0"
+"oe-studio": "git+https://github.com/EdgeVerve/oe-studio.git#2.0.0"
 ```
 
 You can also install this mixin on command line using npm install.
