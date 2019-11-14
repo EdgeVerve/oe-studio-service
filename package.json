@@ -1,6 +1,6 @@
 {
   "name": "oe-studio-service",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "oe-cloud module for enabling and supporting oe-studio",
   "engines": {
     "node": ">=6"
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "async": "2.6.1",
-    "lodash": "4.17.11"
+    "lodash": "4.17.14"
   },
   "devDependencies": {
     "babel-eslint": "7.2.3",
@@ -24,7 +24,7 @@
     "chai-things": "0.2.0",
     "chalk": "1.1.1",
     "eslint": "4.10.0",
-    "grunt": "1.0.3",
+    "grunt": "1.0.4",
     "grunt-contrib-clean": "2.0.0",
     "grunt-contrib-copy": "1.0.0",
     "grunt-mkdir": "1.0.0",
@@ -34,11 +34,11 @@
     "mocha": "5.2.0",
     "superagent-defaults": "0.1.14",
     "supertest": "3.4.2",
-    "oe-metadata-ui": "2.0.0",
-    "oe-cloud": "2.0.0",
+    "oe-metadata-ui": "^2.0.0",
+    "oe-cloud": "^2.0.0",
     "loopback-connector-mongodb": "3.9.2",
-    "oe-connector-oracle": "2.0.0",
-    "oe-connector-postgresql": "2.0.0"
+    "oe-connector-oracle": "^2.0.0",
+    "oe-connector-postgresql": "^2.0.0"
   },
   "repository": {
     "type": "git",

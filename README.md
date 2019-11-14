@@ -1,5 +1,4 @@
-# oe-studio
-
+# oe-studio-service
 This is oeCloud working module that enables the usage of oe-studio in the application.
 
 ### Getting Started
@@ -13,8 +12,8 @@ To use this oe-studio feature in project from this module, you should install th
 ### Testing and Code coverage
 
 ```sh
-$ git clone https://github.com/EdgeVerve/oe-studio.git
-$ cd oe-studio
+$ git clone https://github.com/EdgeVerve/oe-studio-service.git
+$ cd oe-studio-service
 $ npm install --no-optional
 $ npm run grunt-cover
 ```
@@ -24,18 +23,18 @@ you can find coverage report in coverage folder.
 
 ### Installation
 
-To use oe-studio in your application, you should include this module as a dependency to your app package.json as shown below.
+To use oe-studio-service in your application, you should include this module as a dependency to your app package.json as shown below.
 
 
 ```javascript
-"oe-studio": "git+https://github.com/EdgeVerve/oe-studio.git#2.0.0"
+"oe-studio-service": "^2.0.0"
 ```
 
 You can also install this mixin on command line using npm install.
 
 
 ```sh
-$ npm install <git path oe-studio> --no-optional
+$ npm install <git path oe-studio-service> --no-optional
 ```
 
 
@@ -48,14 +47,14 @@ app-list.json
 ```javascript
 
   {
-    "path": "oe-studio",
+    "path": "oe-studio-service",
     "enabled": true
   }
 ```
 
 ### Bower dependency
 
-To run the oe-studio you will need oe-studio bower component in your application under the `client/bower_components` path
+To run the oe-studio-service you will need oe-studio bower component in your application under the `client/bower_components` path
 You can install the bower component using the following command.
 
 ```sh
@@ -91,7 +90,7 @@ Currently supported designer config are as follows :
 ...
 ```
 
-##Modules
+## Modules
 
 The modules array provided in the `config.json` determines the plugins available to oe-studio. This array should contain objects similar to UIRoutes model data.
 ```
