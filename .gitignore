@@ -43,3 +43,4 @@ out/
 /common/models/test
 /node_modules
 package-lock.json
+oracle-user.sh

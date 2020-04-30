@@ -7,9 +7,9 @@
 var oecloud = require('oe-cloud');
 
 oecloud.observe('loaded', function (ctx, next) {
-  console.log("oe-cloud modules loaded");
+  console.log('oe-cloud modules loaded');
   return next();
-})
+});
 
 oecloud.boot(__dirname, function (err) {
   if (err) {
@@ -19,7 +19,6 @@ oecloud.boot(__dirname, function (err) {
   oecloud.start();
   oecloud.emit('test-start');
 });
-
 
 
 var chalk = require('chalk');
@@ -38,17 +37,17 @@ var accessToken;
 describe(chalk.blue('oe-studio-test'), function () {
   this.timeout(10000);
 
-  before("wait for server to start",function(done){
-    oecloud.on("test-start",function(){
+  before('wait for server to start', function (done) {
+    oecloud.on('test-start', function () {
       done();
-    })
+    });
   });
 
   it('t1 create user admin/admin with /default tenant', function (done) {
     var url = basePath + '/users';
     api.set('Accept', 'application/json')
       .post(url)
-      .send([{ username: "admin", password: "admin", email: "admin@admin.com" }])
+      .send([{ username: 'admin', password: 'admin', email: 'admin@admin.com' }])
       .end(function (err, response) {
         var result = response.body;
         expect(result[0].id).to.be.defined;
@@ -60,7 +59,7 @@ describe(chalk.blue('oe-studio-test'), function () {
     var url = basePath + '/users/login';
     api.set('Accept', 'application/json')
       .post(url)
-      .send({ username: "admin", password: "admin" })
+      .send({ username: 'admin', password: 'admin' })
       .end(function (err, response) {
         var result = response.body;
         accessToken = result.id;
@@ -97,9 +96,9 @@ describe(chalk.blue('oe-studio-test'), function () {
   });
 
   it('returns designer index page with subPath', function (done) {
-    oecloud.set('subPath', "/test");
-    var designerConfig = oecloud.get("designer");
-    designerConfig.subPath = "/test";
+    oecloud.set('subPath', '/test');
+    var designerConfig = oecloud.get('designer');
+    designerConfig.subPath = '/test';
     oecloud.set('designer', designerConfig);
     var getUrl = designerMountPath;
     api.set('Authorization', accessToken)
@@ -120,7 +119,6 @@ describe(chalk.blue('oe-studio-test'), function () {
       .get(getUrl)
       .expect(302)
       .end(function (err, result) {
-
         if (err) {
           done(err);
         } else {
@@ -326,7 +324,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({ file: "client/test.html", data: "my-file-dummy-content" })
+      .send({ file: 'client/test.html', data: 'my-file-dummy-content' })
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -345,7 +343,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({ data: "Test-theme file" })
+      .send({ data: 'Test-theme file' })
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -364,7 +362,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({ file: "client/test.html", data: "my-file-dummy-content" })
+      .send({ file: 'client/test.html', data: 'my-file-dummy-content' })
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -403,7 +401,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({ modelName: "TestUIModel" })
+      .send({ modelName: 'TestUIModel' })
       .expect(500)
       .end(function (err, result) {
         if (err) {
@@ -422,7 +420,7 @@ describe(chalk.blue('oe-studio-test'), function () {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .post(postUrl)
-      .send({ modelName: "ModelDefinition" })
+      .send({ modelName: 'ModelDefinition' })
       .expect(200)
       .end(function (err, result) {
         if (err) {
@@ -434,7 +432,7 @@ describe(chalk.blue('oe-studio-test'), function () {
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .post(postUrl)
-            .send({ modelName: "ModelDefinition" })
+            .send({ modelName: 'ModelDefinition' })
             .expect(200)
             .end(function (err, result) {
               if (err) {
@@ -448,5 +446,4 @@ describe(chalk.blue('oe-studio-test'), function () {
         }
       });
   });
-
 });
